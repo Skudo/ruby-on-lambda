@@ -1,0 +1,6 @@
+skudo:
+  adapter: 'mysql2'
+  host: 'localhost'
+  username: 'user'
+  password: 'secret_password'
+  database: 'database'

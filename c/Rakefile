@@ -1,0 +1,66 @@
+require 'aws-sdk-core'
+require 'fileutils'
+
+def deploy_commands
+  [
+    'mkdir -p lib',
+    'cp -a /usr/lib64/mysql56/* lib/',
+    'bundle --path vendor/bundle --without development test'
+  ]
+end
+
+def docker_image
+  "#{name}-builder"
+end
+
+def docker_image_exist?
+  system("docker image inspect #{docker_image} > /dev/null")
+end
+
+def docker_params
+  [
+    '--rm',
+    "-v #{project_folder}:/var/task"
+  ]
+end
+
+def name
+  File.basename(project_folder)
+end
+
+def project_folder
+  File.expand_path(__dir__)
+end
+
+def sh(command)
+  puts command
+  system(command)
+end
+
+namespace :docker do
+  task :build do
+    sh("cd #{project_folder} && docker build . -t #{docker_image}")
+  end
+end
+
+task :build do
+  Rake::Task['clean'].invoke
+
+  command = "docker run #{docker_params.join(' ')} #{docker_image} " +
+            %(/bin/bash -c "#{deploy_commands.join(' && ')}")
+  sh(command)
+end
+
+task :clean do
+  %w[.bundle lib vendor].each do |directory|
+    full_path = File.expand_path(directory, __dir__)
+    FileUtils.rm_rf(full_path)
+  end
+end
+
+task :deploy do
+  Rake::Task['docker:build'].invoke unless docker_image_exist?
+  Rake::Task['build'].invoke
+
+  sh('sls deploy -v')
+end
