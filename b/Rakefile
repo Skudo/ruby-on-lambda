@@ -1,0 +1,22 @@
+def sh(command)
+  puts command
+  system(command)
+end
+
+task :clean do
+  %w[vendor].each do |directory|
+    full_path = File.expand_path(directory, __dir__)
+    FileUtils.rm_rf(full_path)
+  end
+end
+
+task :deploy do
+  Rake::Task['clean'].invoke
+
+  commands = [
+    'bundle --path vendor/bundle --without development test',
+    'sls deploy -v'
+  ]
+
+  sh(commands.join(' && '))
+end
