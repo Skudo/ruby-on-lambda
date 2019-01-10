@@ -1,0 +1,8 @@
+def sh(command)
+  puts command
+  system(command)
+end
+
+task :deploy do
+  sh('sls deploy -v')
+end
