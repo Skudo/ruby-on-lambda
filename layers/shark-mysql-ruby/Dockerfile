@@ -1,3 +1,6 @@
-FROM huydinh/lambda-builder-ruby2.5
+FROM lambci/lambda:build-ruby2.5
 
-RUN yum -y install mysql56-devel mysql56-libs
+RUN curl -sL https://rpm.nodesource.com/setup_8.x | bash -
+RUN yum remove -y nodejs
+RUN yum -y install gcc-c++ make nodejs mysql56-devel mysql56-libs
+RUN npm install -g serverless
