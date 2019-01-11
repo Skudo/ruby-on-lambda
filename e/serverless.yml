@@ -1,0 +1,31 @@
+service: 'ruby-on-lambda-example-e'
+
+provider:
+  name: aws
+  runtime: ruby2.5
+  memorySize: 128
+  stage: skudo
+  region: eu-central-1
+  environment:
+    RDS_DATABASE: ${file(config/database.yml):${self:provider.stage}.database}
+    RDS_HOST: ${file(config/database.yml):${self:provider.stage}.host}
+    RDS_PASSWORD: ${file(config/database.yml):${self:provider.stage}.password}
+    RDS_USERNAME: ${file(config/database.yml):${self:provider.stage}.username}
+  vpc:
+    securityGroupIds:
+      - 'sg-0b8d45a80d83169a2'
+    subnetIds:
+      - 'subnet-021bec6e91b0b02cc'
+      - 'subnet-0527504db3f68736e'
+      - 'subnet-09980fbdd8062c00b'
+
+functions:
+  test:
+    handler: handlers.show
+    layers:
+      - arn:aws:lambda:eu-central-1:569053839623:layer:shark-mysql-ruby:1
+    events:
+      - http:
+          path: /test
+          method: get
+          cors: true
