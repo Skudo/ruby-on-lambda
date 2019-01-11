@@ -19,6 +19,7 @@ def deploy_commands
     'mkdir -p lib',
     'cp -a /usr/lib64/mysql56/* lib/',
     'bundle --path vendor/bundle --without development test',
+    "rsync -aq --del /tmp/#{name}/vendor /src/#{name}/",
     'sls deploy -v'
   ]
 end
