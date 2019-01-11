@@ -1,0 +1,13 @@
+service: shark-mysql-ruby-layer
+
+frameworkVersion: '>= 1.35.0 < 2.0.0'
+
+provider:
+  name: aws
+  region: eu-central-1
+  stage: skudo
+
+layers:
+  shark-mysql-ruby:
+    compatibleRuntimes:
+      - ruby2.5
