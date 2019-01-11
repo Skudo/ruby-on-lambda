@@ -1,0 +1,12 @@
+#!/bin/sh
+
+DIFFTOOL=diff
+
+if type colordiff > /dev/null; then
+  DIFFTOOL=colordiff
+fi
+
+$DIFFTOOL -wur \
+          -x '.serverless' -x 'lib' -x 'vendor' -x 'gems.locked' \
+          $1 $2 \
+          | less
