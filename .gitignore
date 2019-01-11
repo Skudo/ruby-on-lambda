@@ -1,0 +1,6 @@
+*/.serverless
+*/config/database.yml
+*/vendor
+
+c/.bundle
+c/lib
